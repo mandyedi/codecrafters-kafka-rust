@@ -43,9 +43,13 @@ fn main() {
                     correlation_id: request_header.correlation_id,
                 };
 
-                let mut response = Vec::with_capacity(8);
+                let mut response = Vec::with_capacity(10);
                 response.put_i32(response_header.message_length);
                 response.put_i32(response_header.correlation_id);
+
+                if 0 > request_header.request_api_version || 4 < request_header.request_api_version {
+                    response.put_i16(35);
+                }
 
                 stream.write_all(&response).unwrap();
             }
